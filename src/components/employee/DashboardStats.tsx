@@ -42,7 +42,7 @@ export function DashboardStats({ currentUser, refreshKey }: Props) {
   ];
 
   return (
-    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-5">
       {cards.map((stat, i) => (
         <div
           key={stat.label}

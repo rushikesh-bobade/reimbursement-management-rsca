@@ -55,17 +55,17 @@ export function EmployeeDashboard({ page, currentUser, onRefresh }: Props) {
             </div>
           </div>
           <div className="divide-y divide-surface-border/80 rounded-xl border border-surface-border/60 bg-surface-low/40">
-            <div className="flex items-center justify-between gap-4 px-4 py-3.5">
-              <span className="text-sm text-on-surface-variant">Department</span>
-              <span className="text-sm font-medium text-on-surface">{currentUser.department || "—"}</span>
+            <div className="flex items-center justify-between gap-6 px-4 py-3.5 sm:px-5">
+              <span className="shrink-0 text-sm text-on-surface-variant">Department</span>
+              <span className="min-w-0 text-right text-sm font-medium text-on-surface">{currentUser.department || "—"}</span>
             </div>
-            <div className="flex items-center justify-between gap-4 px-4 py-3.5">
-              <span className="text-sm text-on-surface-variant">User ID</span>
-              <span className="max-w-[55%] truncate font-mono text-xs font-medium text-on-surface">{currentUser.id}</span>
+            <div className="flex items-center justify-between gap-6 px-4 py-3.5 sm:px-5">
+              <span className="shrink-0 text-sm text-on-surface-variant">User ID</span>
+              <span className="max-w-[min(100%,14rem)] truncate text-right font-mono text-xs font-medium text-on-surface">{currentUser.id}</span>
             </div>
-            <div className="flex items-center justify-between gap-4 px-4 py-3.5">
-              <span className="text-sm text-on-surface-variant">Company</span>
-              <span className="text-sm font-medium text-on-surface">Acme Corp</span>
+            <div className="flex items-center justify-between gap-6 px-4 py-3.5 sm:px-5">
+              <span className="shrink-0 text-sm text-on-surface-variant">Company</span>
+              <span className="text-right text-sm font-medium text-on-surface">Acme Corp</span>
             </div>
           </div>
         </div>
