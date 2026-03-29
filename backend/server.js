@@ -6,6 +6,7 @@ require("./models/Company");
 require("./models/user");
 require("./models/ExpenseCategory");
 require("./models/Expense");
+require("./models/ApprovalRequest");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/admin", require("./routes/adminRoutes"));
 app.use("/expenses", require("./routes/expenseRoutes"));
+app.use("/approvals", require("./routes/approvalRoutes"));
 
 sequelize.sync({ alter: true }).then(() => {
   app.listen(process.env.PORT || 5000, () => {

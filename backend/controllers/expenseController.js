@@ -1,4 +1,6 @@
 const Expense = require("../models/Expense");
+const User = require("../models/user");
+const ApprovalRequest = require("../models/ApprovalRequest");
 const expenseSchema = require("../validators/expenseSchema");
 
 exports.createExpense = async (req, res) => {
@@ -16,6 +18,16 @@ exports.createExpense = async (req, res) => {
       employee_id: req.user.id
     });
 
+    const employee = await User.findByPk(req.user.id);
+
+    if (employee.manager_id) {
+      await ApprovalRequest.create({
+        expense_id: expense.id,
+        approver_id: employee.manager_id,
+        step_order: 1
+      });
+    }
+
     res.status(201).json({
       message: "Expense submitted",
       expense
@@ -29,11 +41,18 @@ exports.createExpense = async (req, res) => {
 };
 
 exports.getMyExpenses = async (req, res) => {
-  const expenses = await Expense.findAll({
-    where: {
-      employee_id: req.user.id
-    }
-  });
+  try {
+    const expenses = await Expense.findAll({
+      where: {
+        employee_id: req.user.id
+      }
+    });
 
-  res.json(expenses);
+    res.json(expenses);
+
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
 };
