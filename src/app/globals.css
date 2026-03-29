@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+@theme {
+  --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface: #f8f9fc;
+  --color-surface-low: #f0f2f8;
+  --color-surface-container: #e8ebf4;
+  --color-surface-high: #dfe4f0;
+  --color-surface-highest: #d4daf0;
+  --color-surface-lowest: #ffffff;
+
+  --color-primary: #0058be;
+  --color-primary-dark: #004494;
+  --color-primary-container: #2170e4;
+  --color-primary-fixed: #d8e2ff;
+  --color-primary-fixed-dim: #adc6ff;
+
+  --color-surface-border: #d8deef;
+
+  --color-on-surface: #131b2e;
+  --color-on-surface-variant: #424754;
+  --color-on-primary: #ffffff;
+
+  --color-sidebar: #0f172a;
+  --color-sidebar-hover: #1e293b;
+  --color-sidebar-active: #0d4da8;
+
+  --color-outline: #727785;
+  --color-outline-variant: #c2c6d6;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+
+  --color-tertiary: #924700;
+  --color-tertiary-fixed: #ffdcc6;
+
+  --color-secondary-container: #dae2fd;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-inter);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.25s ease-out forwards;
+}
+
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+
+/* App shell: subtle depth without noise */
+.ui-page-canvas {
+  background-color: var(--color-surface-low);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 0% -20%, rgb(0 88 190 / 0.06), transparent 50%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgb(33 112 228 / 0.05), transparent 45%);
+}
+
+/* Auth marketing panel grid */
+.ui-auth-pattern {
+  background-color: #0b1220;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* App data tables: middle-align cells so badges, text, and numbers line up */
+table.app-table {
+  border-collapse: collapse;
+}
+table.app-table th,
+table.app-table td {
+  vertical-align: middle;
+}
+
+/* Single-line page toolbars */
+.app-header-title {
+  min-height: 1.75rem;
+}

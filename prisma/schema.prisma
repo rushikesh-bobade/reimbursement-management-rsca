@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUMS ──────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum ExpenseStatus {
+  DRAFT
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum ExpenseCategory {
+  TRAVEL
+  MEALS
+  OFFICE_SUPPLIES
+  EQUIPMENT
+  SOFTWARE
+  COMMUNICATION
+  OTHER
+}
+
+enum ApprovalRuleType {
+  PERCENTAGE     // e.g. 60% of assigned approvers must approve
+  SPECIFIC_ROLE  // e.g. CFO auto-approves
+  HYBRID         // e.g. 60% OR CFO approves
+}
+
+enum ApprovalAction {
+  APPROVED
+  REJECTED
+  PENDING
+}
+
+// ─── COMPANY ────────────────────────────────────────
+
+model Company {
+  id           String   @id @default(cuid())
+  name         String
+  baseCurrency String   @default("USD")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  users         User[]
+  approvalRules ApprovalRule[]
+}
+
+// ─── USER (self-referencing manager relationship) ───
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  password   String?
+  name       String
+  role       Role     @default(EMPLOYEE)
+  department String?
+  avatarUrl  String?
+  companyId  String
+  managerId  String?
+
+  company  Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  manager  User?   @relation("ManagerRelation", fields: [managerId], references: [id])
+  reports  User[]  @relation("ManagerRelation")
+
+  expenses          Expense[]
+  approvalQueueItems ExpenseApprovalQueue[] @relation("ApproverRelation")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── EXPENSE ────────────────────────────────────────
+
+model Expense {
+  id              String          @id @default(cuid())
+  amount          Float
+  originalCurrency String         @default("USD")
+  convertedAmount Float?          // amount in company base currency
+  category        ExpenseCategory
+  description     String
+  date            DateTime
+  receiptUrl      String?         // local file path
+  status          ExpenseStatus   @default(PENDING)
+  currentStepOrder Int            @default(1)
+
+  submitterId String
+  submitter   User   @relation(fields: [submitterId], references: [id], onDelete: Cascade)
+
+  approvalQueue ExpenseApprovalQueue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── APPROVAL RULE (sequential, conditional) ────────
+
+model ApprovalRule {
+  id          String           @id @default(cuid())
+  companyId   String
+  stepOrder   Int              // 1, 2, 3 … determines sequence
+  ruleName    String           // "Manager Review", "Finance Approval", etc.
+  ruleType    ApprovalRuleType @default(PERCENTAGE)
+  approverRole Role            // which role handles this step
+  specificRoleName String?     // e.g. "CFO" for SPECIFIC_ROLE or HYBRID
+  percentageRequired Float?    // e.g. 0.60 for 60%
+  isActive    Boolean          @default(true)
+
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  queueItems ExpenseApprovalQueue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, stepOrder])
+}
+
+// ─── EXPENSE APPROVAL QUEUE (junction/tracking) ─────
+
+model ExpenseApprovalQueue {
+  id             String         @id @default(cuid())
+  expenseId      String
+  approvalRuleId String
+  approverId     String?
+  action         ApprovalAction @default(PENDING)
+  comment        String?
+  actionAt       DateTime?
+
+  expense      Expense      @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  approvalRule ApprovalRule @relation(fields: [approvalRuleId], references: [id], onDelete: Cascade)
+  approver     User?        @relation("ApproverRelation", fields: [approverId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([expenseId, approvalRuleId, approverId])
+}
