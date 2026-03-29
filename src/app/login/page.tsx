@@ -24,15 +24,16 @@ function InputField({ id, label, type, placeholder, icon, autoFocus = false, reg
   const [isFocused, setIsFocused] = useState(autoFocus);
 
   return (
-    <div>
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700">{label}</label>
-      <div className="flex items-center gap-3">
-        <span className="pointer-events-none flex h-5 w-5 items-center justify-center text-gray-400">{icon}</span>
-        <div
-          className={`flex-1 rounded-lg border bg-white transition-colors ${
-            isFocused ? "border-blue-600 shadow-[0_0_0_1px_#2563eb]" : "border-gray-300"
-          }`}
-        >
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700">{label}</label>
+        <span className="pointer-events-none flex h-4 w-4 items-center justify-center text-gray-400">{icon}</span>
+      </div>
+      <div
+        className={`rounded-lg border bg-white transition-colors ${
+          isFocused ? "border-blue-600 shadow-[0_0_0_1px_#2563eb]" : "border-gray-300"
+        }`}
+      >
         <input
           id={id}
           type={type}
@@ -45,10 +46,9 @@ function InputField({ id, label, type, placeholder, icon, autoFocus = false, reg
             setIsFocused(false);
             registration.onBlur(e);
           }}
-          className="block w-full rounded-lg border-none bg-transparent px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none"
+          className="block w-full rounded-lg border-none bg-transparent px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none"
         />
         </div>
-      </div>
       {error && <p className="mt-2 text-sm text-error">{error.message}</p>}
     </div>
   );
@@ -56,14 +56,14 @@ function InputField({ id, label, type, placeholder, icon, autoFocus = false, reg
 
 function TestAccounts({ onSelect }: { onSelect: (role: "ADMIN" | "MANAGER" | "EMPLOYEE") => void }) {
   return (
-    <div className="mt-8">
+    <div className="mt-7 border-t border-gray-100 pt-6">
       <div className="flex items-center gap-3 text-center">
         <span className="h-px flex-1 bg-gray-200" />
         <span className="text-xs font-semibold uppercase tracking-[0.05em] text-gray-500">QUICK TEST ACCOUNTS</span>
         <span className="h-px flex-1 bg-gray-200" />
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-3">
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <button
           type="button"
           onClick={() => onSelect("ADMIN")}
@@ -181,11 +181,11 @@ export default function LoginPage() {
         <div className="relative z-10 text-sm text-slate-500">© 2026 ReimburseFlow</div>
       </div>
 
-      <div className="flex w-full flex-col items-center justify-center p-8 lg:w-1/2">
-        <div className="w-full max-w-md space-y-8">
-          <div>
+      <div className="flex w-full flex-col items-center justify-center overflow-y-auto px-4 py-6 sm:px-10 sm:py-8 lg:w-1/2 lg:px-14">
+        <div className="w-full max-w-md rounded-2xl border border-gray-100 bg-white p-4 shadow-none sm:p-8 sm:shadow-sm">
+          <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900">Sign in</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="text-sm text-gray-600">
               New to the product?{" "}
               <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500 hover:underline">
                 Create a company account
@@ -193,7 +193,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="mt-5 flex flex-col gap-4 sm:mt-6 sm:gap-5" onSubmit={form.handleSubmit(onSubmit)}>
             {error && (
               <div className="rounded-xl border border-red-200/90 bg-red-50 px-3 py-3 text-sm text-red-800">{error}</div>
             )}
@@ -229,7 +229,7 @@ export default function LoginPage() {
               )}
             />
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <label htmlFor="remember-me" className="flex items-center gap-2">
                 <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600" />
                 <span className="text-sm text-gray-700">Remember me</span>
