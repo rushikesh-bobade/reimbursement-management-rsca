@@ -132,6 +132,7 @@ export function ManagerDashboard({ page, currentUser, onRefresh }: Props) {
 
   const filteredExpenses = filter === "ALL" ? expenses : expenses.filter((e) => e.status === filter);
   const maxLevel = rules.length > 0 ? Math.max(...rules.map((r) => r.stepOrder)) : 1;
+  const displayBaseCurrency = expenses[0]?.baseCurrency || "USD";
 
   const filters: { value: FilterStatus; label: string; count: number }[] = [
     { value: "ALL", label: "All", count: expenses.length },
@@ -217,7 +218,7 @@ export function ManagerDashboard({ page, currentUser, onRefresh }: Props) {
                 <th className="whitespace-nowrap px-6 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Date</th>
                 <th className="whitespace-nowrap px-6 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Category</th>
                 <th className="whitespace-nowrap px-6 py-3 text-right text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Original</th>
-                <th className="whitespace-nowrap px-6 py-3 text-right text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Converted (USD)</th>
+                <th className="whitespace-nowrap px-6 py-3 text-right text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Converted ({displayBaseCurrency})</th>
                 <th className="min-w-[140px] px-6 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Description</th>
                 <th className="whitespace-nowrap px-6 py-3 text-center text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Step</th>
                 <th className="whitespace-nowrap px-6 py-3 text-center text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Status</th>
@@ -267,8 +268,8 @@ export function ManagerDashboard({ page, currentUser, onRefresh }: Props) {
                       </td>
                       <td className="whitespace-nowrap px-6 py-3.5 text-right text-sm font-semibold tabular-nums text-on-surface">{formatCurrency(expense.amount, expense.originalCurrency)}</td>
                       <td className="whitespace-nowrap px-6 py-3.5 text-right tabular-nums">
-                        {expense.originalCurrency !== "USD" && expense.convertedAmount ? (
-                          <span className="text-sm font-medium text-primary">{formatCurrency(expense.convertedAmount, "USD")}</span>
+                        {expense.originalCurrency !== (expense.baseCurrency || "USD") && expense.convertedAmount ? (
+                          <span className="text-sm font-medium text-primary">{formatCurrency(expense.convertedAmount, expense.baseCurrency || "USD")}</span>
                         ) : (
                           <span className="text-sm text-on-surface-variant">—</span>
                         )}

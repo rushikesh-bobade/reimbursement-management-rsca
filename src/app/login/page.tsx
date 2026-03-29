@@ -1,13 +1,94 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, type ReactNode } from "react";
+import { useForm, type FieldError, type UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { loginSchema } from "@/lib/schemas";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, Loader2, ArrowRight, Wallet, Check } from "lucide-react";
+import { Loader2, ArrowRight, CreditCard, CheckCircle2, Scale, Users } from "lucide-react";
 import Link from "next/link";
+
+interface InputFieldProps {
+  id: "email" | "password";
+  label: string;
+  type: "email" | "password";
+  placeholder: string;
+  icon: ReactNode;
+  autoFocus?: boolean;
+  registration: UseFormRegisterReturn;
+  error?: FieldError;
+}
+
+function InputField({ id, label, type, placeholder, icon, autoFocus = false, registration, error }: InputFieldProps) {
+  const [isFocused, setIsFocused] = useState(autoFocus);
+
+  return (
+    <div>
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700">{label}</label>
+      <div className="flex items-center gap-3">
+        <span className="pointer-events-none flex h-5 w-5 items-center justify-center text-gray-400">{icon}</span>
+        <div
+          className={`flex-1 rounded-lg border bg-white transition-colors ${
+            isFocused ? "border-blue-600 shadow-[0_0_0_1px_#2563eb]" : "border-gray-300"
+          }`}
+        >
+        <input
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          autoFocus={autoFocus}
+          required
+          {...registration}
+          onFocus={() => setIsFocused(true)}
+          onBlur={(e) => {
+            setIsFocused(false);
+            registration.onBlur(e);
+          }}
+          className="block w-full rounded-lg border-none bg-transparent px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none"
+        />
+        </div>
+      </div>
+      {error && <p className="mt-2 text-sm text-error">{error.message}</p>}
+    </div>
+  );
+}
+
+function TestAccounts({ onSelect }: { onSelect: (role: "ADMIN" | "MANAGER" | "EMPLOYEE") => void }) {
+  return (
+    <div className="mt-8">
+      <div className="flex items-center gap-3 text-center">
+        <span className="h-px flex-1 bg-gray-200" />
+        <span className="text-xs font-semibold uppercase tracking-[0.05em] text-gray-500">QUICK TEST ACCOUNTS</span>
+        <span className="h-px flex-1 bg-gray-200" />
+      </div>
+
+      <div className="mt-6 grid grid-cols-3 gap-3">
+        <button
+          type="button"
+          onClick={() => onSelect("ADMIN")}
+          className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          Admin
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect("MANAGER")}
+          className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          Manager
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect("EMPLOYEE")}
+          className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          Employee
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,184 +116,159 @@ export default function LoginPage() {
     }
   };
 
-  const sellingPoints = [
-    "Multi-step approvals with clear audit trail",
-    "FX-aware amounts and structured categories",
-    "Role-based queues for managers and finance",
-  ];
-
   return (
-    <div className="flex min-h-screen bg-surface">
-      {/* Brand panel */}
-      <div className="relative hidden min-h-screen w-[44%] min-w-[420px] flex-col justify-between overflow-hidden lg:flex">
-        <div className="ui-auth-pattern absolute inset-0" />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-[#0b3d82] to-[#0b1220]" />
-        <div className="relative z-10 flex flex-1 flex-col p-10 xl:p-14">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20 backdrop-blur-sm">
-              <Wallet className="h-6 w-6 text-white" strokeWidth={2} />
+    <div className="flex min-h-screen w-full bg-white text-gray-900">
+      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-slate-950 p-12 text-white lg:flex">
+        <div className="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full bg-blue-600/20 blur-[100px]" />
+        <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-indigo-600/20 blur-[100px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[size:20px_20px] opacity-50" />
+
+        <div className="relative z-10">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-500/30">
+              <CreditCard className="h-6 w-6 text-white" strokeWidth={2} />
             </div>
             <div>
-              <p className="font-display text-lg font-semibold tracking-tight text-white">ReimburseFlow</p>
-              <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/55">Expense management</p>
+              <h1 className="text-2xl font-bold tracking-tight text-white">ReimburseFlow</h1>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-400">Expense Management</p>
             </div>
           </div>
 
-          <div className="mt-20 max-w-md">
-            <h1 className="font-display text-3xl font-semibold leading-tight tracking-tight text-white xl:text-[2rem]">
-              Bring reimbursements under control
-            </h1>
-            <p className="mt-4 text-base leading-relaxed text-white/75">
-              One workspace for employees, managers, and admins—with workflows that match how your company actually approves spend.
+          <div className="mt-20 max-w-lg">
+            <h2 className="text-5xl font-extrabold leading-[1.15] tracking-tight">
+              Bring your <br />
+              <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">reimbursements</span> <br />
+              under control.
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-slate-400">
+              One workspace for employees, managers, and admins—with intelligent workflows that match how your company actually approves spend.
             </p>
-            <ul className="mt-10 space-y-4">
-              {sellingPoints.map((line) => (
-                <li key={line} className="flex items-start gap-3 text-sm text-white/85">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/20">
-                    <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                  </span>
-                  {line}
-                </li>
-              ))}
-            </ul>
-          </div>
 
-          <p className="text-xs text-white/40">© {new Date().getFullYear()} ReimburseFlow</p>
+            <div className="mt-12 space-y-4">
+              <div className="flex items-start space-x-4 rounded-2xl border border-white/5 bg-white/[0.03] p-5 backdrop-blur-md transition-all hover:bg-white/[0.05]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20">
+                  <CheckCircle2 className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-slate-100">Multi-step approvals</h3>
+                  <p className="mt-1 text-sm text-slate-400">Customizable routing with a crystal-clear audit trail.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4 rounded-2xl border border-white/5 bg-white/[0.03] p-5 backdrop-blur-md transition-all hover:bg-white/[0.05]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/20">
+                  <Scale className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-slate-100">FX-aware & Structured</h3>
+                  <p className="mt-1 text-sm text-slate-400">Automatic currency conversion and smart categorization.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4 rounded-2xl border border-white/5 bg-white/[0.03] p-5 backdrop-blur-md transition-all hover:bg-white/[0.05]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-500/10 text-purple-400 ring-1 ring-purple-500/20">
+                  <Users className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-slate-100">Role-based queues</h3>
+                  <p className="mt-1 text-sm text-slate-400">Dedicated, clutter-free views for managers and finance.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div className="relative z-10 text-sm text-slate-500">© 2026 ReimburseFlow</div>
       </div>
 
-      {/* Form panel */}
-      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-8 lg:px-16 xl:px-24">
-        <div className="mx-auto w-full max-w-[440px]">
-          <div className="mb-10 lg:hidden">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/25">
-                <Wallet className="h-5 w-5 text-on-primary" strokeWidth={2} />
-              </div>
-              <span className="font-display text-lg font-semibold text-on-surface">ReimburseFlow</span>
-            </div>
+      <div className="flex w-full flex-col items-center justify-center p-8 lg:w-1/2">
+        <div className="w-full max-w-md space-y-8">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900">Sign in</h2>
+            <p className="mt-2 text-sm text-gray-600">
+              New to the product?{" "}
+              <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                Create a company account
+              </Link>
+            </p>
           </div>
 
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-on-surface sm:text-3xl">Sign in</h2>
-          <p className="mt-2 text-sm text-on-surface-variant">
-            New to the product?{" "}
-            <Link href="/signup" className="font-semibold text-primary underline-offset-4 hover:text-primary-dark hover:underline">
-              Create a company account
-            </Link>
-          </p>
+          <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+            {error && (
+              <div className="rounded-xl border border-red-200/90 bg-red-50 px-3 py-3 text-sm text-red-800">{error}</div>
+            )}
 
-          <div className={`mt-8 rounded-2xl border border-surface-border/90 bg-surface-lowest p-6 shadow-[0_12px_40px_rgba(19,27,46,0.07)] sm:p-8`}>
-            <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
-              {error && (
-                <div className="rounded-xl border border-red-200/90 bg-red-50 px-3 py-3 text-sm text-red-800">{error}</div>
+            <InputField
+              id="email"
+              label="Email"
+              type="email"
+              placeholder="you@company.com"
+              autoFocus
+              registration={form.register("email")}
+              error={form.formState.errors.email}
+              icon={(
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"></path>
+                </svg>
               )}
+            />
 
-              <div>
-                <label htmlFor="login-email" className="block text-sm font-medium text-on-surface">
-                  Email
-                </label>
-                <div className="relative mt-2">
-                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-on-surface-variant/80" />
-                  <input
-                    id="login-email"
-                    {...form.register("email")}
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-xl border border-surface-border/90 bg-surface-low py-2.5 pl-10 pr-4 text-on-surface shadow-inner shadow-on-surface/[0.02] placeholder:text-on-surface-variant/55 focus:border-primary/45 focus:bg-surface-lowest focus:outline-none focus:ring-2 focus:ring-primary/12 sm:text-sm"
-                  />
-                </div>
-                {form.formState.errors.email && (
-                  <p className="mt-2 text-sm text-error">{form.formState.errors.email.message}</p>
-                )}
-              </div>
+            <InputField
+              id="password"
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              registration={form.register("password")}
+              error={form.formState.errors.password}
+              icon={(
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              )}
+            />
 
-              <div>
-                <label htmlFor="login-password" className="block text-sm font-medium text-on-surface">
-                  Password
-                </label>
-                <div className="relative mt-2">
-                  <Lock className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-on-surface-variant/80" />
-                  <input
-                    id="login-password"
-                    {...form.register("password")}
-                    type="password"
-                    autoComplete="current-password"
-                    className="block w-full rounded-xl border border-surface-border/90 bg-surface-low py-2.5 pl-10 pr-4 text-on-surface shadow-inner shadow-on-surface/[0.02] placeholder:text-on-surface-variant/55 focus:border-primary/45 focus:bg-surface-lowest focus:outline-none focus:ring-2 focus:ring-primary/12 sm:text-sm"
-                  />
-                </div>
-                {form.formState.errors.password && (
-                  <p className="mt-2 text-sm text-error">{form.formState.errors.password.message}</p>
-                )}
-              </div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="remember-me" className="flex items-center gap-2">
+                <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600" />
+                <span className="text-sm text-gray-700">Remember me</span>
+              </label>
+              <a href="#forgot" className="text-sm font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                Forgot password?
+              </a>
+            </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <label className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary/20"
-                  />
-                  <span className="text-sm text-on-surface">Remember me</span>
-                </label>
-                <a href="#" className="text-sm font-semibold text-primary underline-offset-4 hover:text-primary-dark hover:underline">
-                  Forgot password?
-                </a>
-              </div>
+            <button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            >
+              {form.formState.isSubmitting ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <>
+                  Continue
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </button>
+          </form>
 
-              <button
-                type="submit"
-                disabled={form.formState.isSubmitting}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-container py-3 text-sm font-semibold text-on-primary shadow-lg shadow-primary/25 transition-all hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {form.formState.isSubmitting ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <>
-                    Continue <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
-              </button>
-
-              <div className="relative pt-2">
-                <div className="absolute inset-x-0 top-1/2 border-t border-surface-border" />
-                <p className="relative mx-auto w-max bg-surface-lowest px-3 text-center text-xs font-medium uppercase tracking-wider text-on-surface-variant/80">
-                  Quick test accounts
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    form.setValue("email", "admin@acme.com");
-                    form.setValue("password", "password123");
-                  }}
-                  className="rounded-xl border border-surface-border/90 py-2.5 text-center text-xs font-semibold text-on-surface transition-colors hover:bg-surface-low"
-                >
-                  Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    form.setValue("email", "manager@acme.com");
-                    form.setValue("password", "password123");
-                  }}
-                  className="rounded-xl border border-surface-border/90 py-2.5 text-center text-xs font-semibold text-on-surface transition-colors hover:bg-surface-low"
-                >
-                  Manager
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    form.setValue("email", "employee@acme.com");
-                    form.setValue("password", "password123");
-                  }}
-                  className="rounded-xl border border-surface-border/90 py-2.5 text-center text-xs font-semibold text-on-surface transition-colors hover:bg-surface-low"
-                >
-                  Employee
-                </button>
-              </div>
-            </form>
-          </div>
+          <TestAccounts
+            onSelect={(role) => {
+              if (role === "ADMIN") {
+                form.setValue("email", "admin@acme.com");
+              }
+              if (role === "MANAGER") {
+                form.setValue("email", "manager@acme.com");
+              }
+              if (role === "EMPLOYEE") {
+                form.setValue("email", "employee@acme.com");
+              }
+              form.setValue("password", "password123");
+            }}
+          />
         </div>
       </div>
     </div>

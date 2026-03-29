@@ -30,6 +30,8 @@ interface ApprovalRuleRow {
 
 export function AdminSettings({ users, onRefresh }: Props) {
   const [rules, setRules] = useState<ApprovalRuleRow[]>([]);
+  const [companyName, setCompanyName] = useState("—");
+  const [baseCurrency, setBaseCurrency] = useState("—");
   const [showAddRule, setShowAddRule] = useState(false);
   const [showAddUser, setShowAddUser] = useState(false);
   const [ruleLoading, setRuleLoading] = useState(false);
@@ -48,9 +50,17 @@ export function AdminSettings({ users, onRefresh }: Props) {
   useEffect(() => {
     async function fetchRules() {
       try {
-        const res = await fetch("/api/approval-rules");
-        const data = await res.json();
-        if (data.rules) setRules(data.rules);
+        const [rulesRes, companyRes] = await Promise.all([
+          fetch("/api/approval-rules"),
+          fetch("/api/company"),
+        ]);
+
+        const rulesData = await rulesRes.json();
+        const companyData = await companyRes.json();
+
+        if (rulesData.rules) setRules(rulesData.rules);
+        if (companyData?.company?.name) setCompanyName(companyData.company.name);
+        if (companyData?.company?.baseCurrency) setBaseCurrency(companyData.company.baseCurrency);
       } catch { /* silently fail */ }
     }
     fetchRules();
@@ -135,7 +145,7 @@ export function AdminSettings({ users, onRefresh }: Props) {
           </div>
           <div>
             <h3 className="font-display text-lg font-semibold tracking-tight text-on-surface">Company</h3>
-            <p className="text-sm text-on-surface-variant">Acme Corp · Base currency USD</p>
+            <p className="text-sm text-on-surface-variant">{companyName} · Base currency {baseCurrency}</p>
           </div>
         </div>
       </div>

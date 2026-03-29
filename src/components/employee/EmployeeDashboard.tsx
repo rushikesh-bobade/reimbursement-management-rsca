@@ -16,6 +16,23 @@ interface Props {
 
 export function EmployeeDashboard({ page, currentUser, onRefresh }: Props) {
   const [refreshKey, setRefreshKey] = useState(0);
+  const [companyName, setCompanyName] = useState("—");
+
+  useEffect(() => {
+    async function fetchCompany() {
+      try {
+        const res = await fetch("/api/company");
+        const data = await res.json();
+        if (data?.company?.name) {
+          setCompanyName(data.company.name);
+        }
+      } catch {
+        // silently keep fallback
+      }
+    }
+
+    fetchCompany();
+  }, []);
 
   const handleExpenseSubmitted = () => {
     setRefreshKey((k) => k + 1);
@@ -65,7 +82,7 @@ export function EmployeeDashboard({ page, currentUser, onRefresh }: Props) {
             </div>
             <div className="flex items-center justify-between gap-6 px-4 py-3.5 sm:px-5">
               <span className="shrink-0 text-sm text-on-surface-variant">Company</span>
-              <span className="text-right text-sm font-medium text-on-surface">Acme Corp</span>
+              <span className="text-right text-sm font-medium text-on-surface">{companyName}</span>
             </div>
           </div>
         </div>
