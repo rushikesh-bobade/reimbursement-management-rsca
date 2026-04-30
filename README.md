@@ -38,6 +38,9 @@ Contributing
 - Fork the repo, create a feature branch, and open a PR against `main`.
 - Run linters and type checks before submitting changes.
 
+Repository History
+- The previous codebase history is preserved in `archive/original-main` so it can be reviewed or restored later.
+
 License & Support
 - This project is provided as-is; update the license file as appropriate for your organization.
 
