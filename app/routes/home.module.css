@@ -1,0 +1,9 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.dashboardHeroSection {}
+.quickActions {}
+.recentExpensesSummary { flex: 1; }

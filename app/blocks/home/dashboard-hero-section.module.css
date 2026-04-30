@@ -1,0 +1,75 @@
+.hero {
+  background: linear-gradient(135deg, var(--color-nav-bg) 0%, #312e81 100%);
+  color: #fff;
+  padding: var(--space-10) var(--space-8);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.greeting {
+  font-size: var(--text-sm);
+  color: #a5b4fc;
+  font-weight: 500;
+  margin-bottom: var(--space-1);
+}
+
+.title {
+  font-family: var(--family-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: var(--space-1);
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: #c7d2fe;
+  margin-bottom: var(--space-8);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+  max-width: 700px;
+}
+
+.metricCard {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  backdrop-filter: blur(4px);
+}
+
+.metricIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metricLabel {
+  font-size: var(--text-xs);
+  color: #c7d2fe;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metricValue {
+  font-family: var(--family-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
